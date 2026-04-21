@@ -6,44 +6,45 @@ use App\Collector\Model\ProcessSnapshot;
 
 class ProcessSnapshotAggregator
 {
-    public function aggregate(array $data): array
+    public function aggregateStat(array $probes): ProcessSnapshot
     {
-        $grouped = $this->groupList($data);
-        $aggregated = $this->avgValues($grouped);
-        return $aggregated;
-    }
+        $stime = $utime = $numThreads = $vsize = $rss = [];
 
-    private function groupList(array $data): array
-    {
-        $grouped = [];
-        foreach ($data as $snapshot) {
-            $grouped[$snapshot->getPid() . '-' . $snapshot->getCommand()][] = $snapshot;
+        foreach($probes as $snapshot) {
+            $stime[] = $snapshot['stime'];
+            $utime[] = $snapshot['utime'];
+            $numThreads[] = $snapshot['num_threads'];
+            $vsize[] = $snapshot['vsize'];
+            $rss[] = $snapshot['rss'];
         }
-        return $grouped;
+        $numberOfItems = count($rss);
+        return new ProcessSnapshot(
+            stime: array_sum($stime)/$numberOfItems,
+            utime: array_sum($utime)/$numberOfItems,
+            mumThreads: array_sum($numThreads)/$numberOfItems,
+            vsize: array_sum($vsize)/$numberOfItems,
+            rss: array_sum($rss)/$numberOfItems,
+            pid: $snapshot['pid'],
+            command: $snapshot['name'],
+            priority: $snapshot['priority'],
+            nice: $snapshot['nice']
+        );
     }
 
-    private function avgValues(array $data): array
+    public function aggregateStatm(array $probes): ProcessSnapshot
     {
-        return array_values(array_map(function($group) {
-            $cpu = []; $mem = []; $vsz = []; $rss = [];
-
-            foreach($group as $snapshot) {
-                $cpu[] = $snapshot->getCpu();
-                $mem[] = $snapshot->getMem();
-                $vsz[] = $snapshot->getVsz();
-                $rss[] = $snapshot->getRss();
-            }
-            $numberOfItems = count($cpu);
-            return new ProcessSnapshot(
-                cpu: array_sum($cpu)/$numberOfItems,
-                mem: array_sum($mem)/$numberOfItems,
-                vsz: array_sum($vsz)/$numberOfItems,
-                rss: array_sum($rss)/$numberOfItems,
-                user: $snapshot->getUser(),
-                pid: $snapshot->getPid(),
-                command: $snapshot->getCommand()
-            );
-        }, $data));
+        $shared = $text = $data = [];
+        foreach ($probes as $snapshot) {
+            $shared[] = $snapshot['shared'];
+            $text[] = $snapshot['text'];
+            $data[] = $snapshot['data'];
+        }
+        $numberOfItems = count($data);
+        return new ProcessSnapshot(
+            shared: array_sum($shared)/$numberOfItems,
+            text: array_sum($text)/$numberOfItems,
+            data: array_sum($data)/$numberOfItems,
+        );
     }
 
 }

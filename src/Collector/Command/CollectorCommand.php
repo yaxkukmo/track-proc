@@ -2,10 +2,13 @@
 
 namespace App\Collector\Command;
 
+use App\Collector\Aggregator\DeltaCalculator;
+use App\Collector\Generator\ProcPathGenerator;
 use App\Collector\Mapper\PsAuxMapper;
 use App\Collector\Aggregator\ProcessSnapshotAggregator;
 use App\Collector\Model\ProcessSnapshotBatch;
-use App\Collector\Parser\PsAuxParser;
+use App\Collector\Parser\ProcParser;
+use App\Collector\Reader\FileContentsReader;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
@@ -22,7 +25,10 @@ class CollectorCommand extends Command implements SignalableCommandInterface
     private bool $running = true;
 
     public function __construct(
-        private readonly PsAuxParser $psAuxParser,
+        private readonly ProcPathGenerator $procPathGenerator,
+        private readonly FileContentsReader $fileReader,
+        private readonly ProcParser $procParser,
+        private readonly DeltaCalculator $deltaCalculator,
         private readonly PsAuxMapper $psAuxMapper,
         private readonly ProcessSnapshotAggregator $aggregator,
         private readonly MessageBusInterface $bus
@@ -33,32 +39,37 @@ class CollectorCommand extends Command implements SignalableCommandInterface
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $buffer = [];
+        $windowData = [];
         $start = time();
 
         while ($this->running) {
-            $buffer[] = `ps aux`;
+            $paths = ($this->procPathGenerator)();
+            $procFileContents = ($this->fileReader)($paths);
+            ($this->procParser)($procFileContents, $windowData);
             if ($this->isTimeToProcessBuffer($start)) {
-                $parsed = $this->psAuxParser->processCommandOutput($buffer);
-                $processSnapshotList = array_map(
-                    function($outputLine) {
-                        $psLineRawData = $this->psAuxParser->processLine($outputLine);
-                        return $this->psAuxMapper->toProcessSnapshot($psLineRawData);
-                    },
-                    $parsed
-                );
+                foreach ($windowData as $pid => $pidData) {
+                    foreach($pidData['stat'] as $key => $current) {
+                        if(isset($pidData['stat'][$key - 1])) {
+                            $windowData[$pid]['stat'][$key]['utime'] = ($this->deltaCalculator)($pidData['stat'][$key - 1]['utime'], $current['utime']);
+                            $windowData[$pid]['stat'][$key]['stime'] = ($this->deltaCalculator)($pidData['stat'][$key - 1]['stime'], $current['stime']);
+                            $windowData[$pid]['stat'] = $this->aggregator->aggregateStat(array_shift($windowData[$pid]['stat']));
+                            $windowData[$pid]['statm'] = $this->aggregator->aggregateStatm(array_shift($windowData[$pid]['statm']));
+                        }
+                    }
+                }
+                var_dump(max($windowData));
+                exit;
 
-                var_dump($processSnapshotList[2]);
-
+                /*
                 $message = new ProcessSnapshotBatch(
                     snapshots: $this->aggregator->aggregate($processSnapshotList),
                     collectedAt: time()
                 );
 
                 $this->bus->dispatch($message);
-
+                */
                 $start = time();
-                $buffer = [];
+                $windowData = [];
             }
             sleep(1);
         }
