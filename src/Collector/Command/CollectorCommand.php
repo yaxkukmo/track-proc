@@ -4,7 +4,6 @@ namespace App\Collector\Command;
 
 use App\Collector\Aggregator\DeltaCalculator;
 use App\Collector\Generator\ProcPathGenerator;
-use App\Collector\Mapper\PsAuxMapper;
 use App\Collector\Aggregator\ProcessSnapshotAggregator;
 use App\Collector\Model\ProcessSnapshotBatch;
 use App\Collector\Parser\ProcParser;
@@ -29,7 +28,6 @@ class CollectorCommand extends Command implements SignalableCommandInterface
         private readonly FileContentsReader $fileReader,
         private readonly ProcParser $procParser,
         private readonly DeltaCalculator $deltaCalculator,
-        private readonly PsAuxMapper $psAuxMapper,
         private readonly ProcessSnapshotAggregator $aggregator,
         private readonly MessageBusInterface $bus
     )
@@ -47,29 +45,35 @@ class CollectorCommand extends Command implements SignalableCommandInterface
             $procFileContents = ($this->fileReader)($paths);
             ($this->procParser)($procFileContents, $windowData);
             if ($this->isTimeToProcessBuffer($start)) {
+                $snapshots = [];
                 foreach ($windowData as $pid => $pidData) {
-                    foreach($pidData['stat'] as $key => $current) {
-                        if(isset($pidData['stat'][$key - 1])) {
-                            $windowData[$pid]['stat'][$key]['utime'] = ($this->deltaCalculator)($pidData['stat'][$key - 1]['utime'], $current['utime']);
-                            $windowData[$pid]['stat'][$key]['stime'] = ($this->deltaCalculator)($pidData['stat'][$key - 1]['stime'], $current['stime']);
-                            $windowData[$pid]['stat'] = $this->aggregator->aggregateStat(array_shift($windowData[$pid]['stat']));
-                            $windowData[$pid]['statm'] = $this->aggregator->aggregateStatm(array_shift($windowData[$pid]['statm']));
+                    foreach($pidData as $key => $current) {
+                        $prev = $key - 1;
+                        if(isset($pidData[$prev])) {
+                            $windowData[$pid][$key]['utime']
+                                = ($this->deltaCalculator)(
+                                    $pidData[$prev]['utime'],
+                                    $current['utime']
+                                );
+                            $windowData[$pid][$key]['stime']
+                                = ($this->deltaCalculator)(
+                                    $pidData[$prev]['stime'],
+                                    $current['stime']
+                                );
                         }
                     }
+                    $snapshots[] = $this->aggregator->aggregate($windowData[$pid]);
                 }
-                var_dump(max($windowData));
-                exit;
 
-                /*
                 $message = new ProcessSnapshotBatch(
-                    snapshots: $this->aggregator->aggregate($processSnapshotList),
+                    snapshots: $snapshots,
                     collectedAt: time()
                 );
 
                 $this->bus->dispatch($message);
-                */
                 $start = time();
                 $windowData = [];
+                unset($snapshots);
             }
             sleep(1);
         }

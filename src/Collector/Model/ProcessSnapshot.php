@@ -5,19 +5,61 @@ namespace App\Collector\Model;
 class ProcessSnapshot
 {
     public function __construct(
-        private string $user,
         private int $pid,
-        private float $cpu,
-        private float $mem,
-        private int $vsz,
+        private int $vsize,
         private int $rss,
-        private string $command
+        private string $command,
+        private int $numThreads,
+        private int $utime,
+        private int $stime,
+        private int $priority,
+        private int $nice,
+        private int $shared,
+        private int $text,
+        private int $data
     )
     { }
 
-    public function getUser(): string
+    public function getData(): int
     {
-        return $this->user;
+        return $this->data;
+    }
+
+    public function getText(): int
+    {
+        return $this->text;
+    }
+
+
+    public function getShared(): int
+    {
+        return $this->shared;
+    }
+
+    public function getNice(): int
+    {
+        return $this->nice;
+    }
+
+
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    public function getStime(): int
+    {
+        return $this->stime;
+    }
+
+    public function getUtime(): int
+    {
+        return $this->utime;
+    }
+
+    public function getNumThreads(): int
+    {
+        return $this->numThreads;
     }
 
     public function getPid(): int
@@ -35,9 +77,9 @@ class ProcessSnapshot
         return $this->mem;
     }
 
-    public function getVsz(): int
+    public function getVsize(): int
     {
-        return $this->vsz;
+        return $this->vsize;
     }
 
     public function getRss(): int

@@ -11,11 +11,15 @@ class ProcParser
     public function __invoke(array $fileContentsList, array &$windowData): void
     {
         foreach($fileContentsList as $pid => $contentsByPid) {
+            $tmp = [];
             foreach($contentsByPid as $type => $content) {
-                $strategy = ($this->parserStrategy)($type);
                 if($content !== null) {
-                    $windowData[$pid][$type][] = $strategy->parse($content);
+                    $strategy = ($this->parserStrategy)($type);
+                    $tmp[] = $strategy->parse($content);
                 }
+            }
+            if(!empty($tmp)) {
+                $windowData[$pid][] = array_merge($tmp[0], $tmp[1]);
             }
         }
     }
