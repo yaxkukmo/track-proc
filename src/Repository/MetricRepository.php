@@ -26,13 +26,12 @@ class MetricRepository extends ServiceEntityRepository
                 ROUND(MIN(m.{$type}), 1) as min_{$type},
                 ROUND(AVG(m.{$type}), 1) as avg_{$type},
                 ROUND(MAX(m.{$type}), 1) as max_{$type},
-                p.user,
-                p.command
+                p.name
             FROM metric AS m
             JOIN process AS p on p.id=m.process_id
             WHERE m.collected_at BETWEEN :from AND :to
             AND m.{$type} > 0
-            GROUP BY m.pid
+            GROUP BY p.pid
             ORDER BY m.{$type} DESC
                 ", [
                     'from' => $from,

@@ -62,7 +62,10 @@ class CollectorCommand extends Command implements SignalableCommandInterface
                                 );
                         }
                     }
-                    $snapshots[] = $this->aggregator->aggregate($windowData[$pid]);
+                    $snapshot = $this->aggregator->aggregate($windowData[$pid]);
+                    if ($snapshot !== null) {
+                        $snapshots[] = $snapshot;
+                    }
                 }
 
                 $message = new ProcessSnapshotBatch(

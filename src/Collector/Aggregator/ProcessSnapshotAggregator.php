@@ -6,7 +6,7 @@ use App\Collector\Model\ProcessSnapshot;
 
 class ProcessSnapshotAggregator
 {
-    public function aggregate(array $probes): ProcessSnapshot
+    public function aggregate(array $probes): ?ProcessSnapshot
     {
         $stime = $utime = $numThreads = $vsize = $rss = $shared = $text = $data = [];
 
@@ -23,6 +23,10 @@ class ProcessSnapshotAggregator
         }
 
         $numberOfItems = count($rss);
+
+        if ($numberOfItems === 0) {
+            return null;
+        }
 
         return new ProcessSnapshot(
             stime: (int)(array_sum($stime)/$numberOfItems),

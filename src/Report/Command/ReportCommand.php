@@ -47,12 +47,15 @@ class ReportCommand extends Command
             $io->note(sprintf('You passed an option to: %s', $to));
         }
 
-        $this->generator->generate(
-            $this->repo->findByDateRange('cpu', $from, $to),
-            $this->repo->findByDateRange('mem', $from, $to),
-            $this->repo->findByDateRange('vsz', $from, $to),
-            $this->repo->findByDateRange('rss', $from, $to),
+        $report = $this->generator->render(
+            [
+                $this->repo->findByDateRange('vsize', $from, $to),
+                $this->repo->findByDateRange('rss', $from, $to),
+            ]
         );
+
+        file_put_contents('/tmp/report_tmp.mm', $report);
+        shell_exec('groff -Tpdf -s -t -mm /tmp/report_tmp.mm > /tmp/report.pdf');
         $io->success('Report generated. You can open /tmp/report.pdf');
 
         return Command::SUCCESS;
