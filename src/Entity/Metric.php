@@ -13,24 +13,39 @@ class Metric
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'pid')]
+    #[ORM\ManyToOne(inversedBy: 'metrics')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Process $process = null;
 
     #[ORM\Column]
-    private ?int $pid = null;
+    private ?int $utime = null;
 
     #[ORM\Column]
-    private ?float $cpu = null;
-
-    #[ORM\Column]
-    private ?float $mem = null;
-
-    #[ORM\Column]
-    private ?int $vsz = null;
+    private ?int $stime = null;
 
     #[ORM\Column]
     private ?int $rss = null;
+
+    #[ORM\Column(type: 'bigint')]
+    private ?int $vsize = null;
+
+    #[ORM\Column]
+    private ?int $numThreads = null;
+
+    #[ORM\Column]
+    private ?int $shared = null;
+
+    #[ORM\Column]
+    private ?int $text = null;
+
+    #[ORM\Column]
+    private ?int $data = null;
+
+    #[ORM\Column]
+    private ?int $priority = null;
+
+    #[ORM\Column]
+    private ?int $nice = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $collectedAt = null;
@@ -38,13 +53,6 @@ class Metric
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getProcess(): ?Process
@@ -59,50 +67,26 @@ class Metric
         return $this;
     }
 
-    public function getPid(): ?int
+    public function getUtime(): ?int
     {
-        return $this->pid;
+        return $this->utime;
     }
 
-    public function setPid(int $pid): static
+    public function setUtime(int $utime): static
     {
-        $this->pid = $pid;
+        $this->utime = $utime;
 
         return $this;
     }
 
-    public function getCpu(): ?float
+    public function getStime(): ?int
     {
-        return $this->cpu;
+        return $this->stime;
     }
 
-    public function setCpu(float $cpu): static
+    public function setStime(int $stime): static
     {
-        $this->cpu = $cpu;
-
-        return $this;
-    }
-
-    public function getMem(): ?float
-    {
-        return $this->mem;
-    }
-
-    public function setMem(float $mem): static
-    {
-        $this->mem = $mem;
-
-        return $this;
-    }
-
-    public function getVsz(): ?int
-    {
-        return $this->vsz;
-    }
-
-    public function setVsz(int $vsz): static
-    {
-        $this->vsz = $vsz;
+        $this->stime = $stime;
 
         return $this;
     }
@@ -115,6 +99,90 @@ class Metric
     public function setRss(int $rss): static
     {
         $this->rss = $rss;
+
+        return $this;
+    }
+
+    public function getVsize(): ?int
+    {
+        return $this->vsize;
+    }
+
+    public function setVsize(int $vsize): static
+    {
+        $this->vsize = $vsize;
+
+        return $this;
+    }
+
+    public function getNumThreads(): ?int
+    {
+        return $this->numThreads;
+    }
+
+    public function setNumThreads(int $numThreads): static
+    {
+        $this->numThreads = $numThreads;
+
+        return $this;
+    }
+
+    public function getShared(): ?int
+    {
+        return $this->shared;
+    }
+
+    public function setShared(int $shared): static
+    {
+        $this->shared = $shared;
+
+        return $this;
+    }
+
+    public function getText(): ?int
+    {
+        return $this->text;
+    }
+
+    public function setText(int $text): static
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    public function getData(): ?int
+    {
+        return $this->data;
+    }
+
+    public function setData(int $data): static
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function getPriority(): ?int
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(int $priority): static
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function getNice(): ?int
+    {
+        return $this->nice;
+    }
+
+    public function setNice(int $nice): static
+    {
+        $this->nice = $nice;
 
         return $this;
     }

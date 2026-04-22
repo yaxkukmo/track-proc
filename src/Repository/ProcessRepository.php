@@ -16,9 +16,9 @@ class ProcessRepository extends ServiceEntityRepository
         parent::__construct($registry, Process::class);
     }
 
-    public function findByUserAndCommand(string $user, string $command): ?Process
+    public function findByPidAndStartTime(int $pid, int $startTime): ?Process
     {
-        return $this->findOneBy(['user' => $user, 'command' => $command]);
+        return $this->findOneBy(['pid' => $pid, 'starttime' => $startTime]);
     }
 
 }

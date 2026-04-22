@@ -24,26 +24,29 @@ class ProcessSnapshotHandler
         $list = $batch->getSnapshotList();
         foreach($list as $item) {
             $runFlush = false;
-            $process = $this->processRepository->findByUserAndCommand($item->getUser(), $item->getCommand());
+            $process = $this->processRepository->findByPidAndStartTime($item->getPid(), $item->getStarttime());
             if (!$process) {
                 $process = new Process();
-                $process->setUser($item->getUser());
-                $process->setCommand($item->getCommand());
-                $runFLush = true;
+                $process->setStarttime($item->getStarttime());
+                $process->setPid($item->getPid());
+                $process->setName($item->getCommand());
+                $this->em->persist($process);
+                $this->em->flush();
             }
             $metric = new Metric();
-            $metric->setPid($item->getPid());
-            $metric->setCpu($item->getCpu());
-            $metric->setMem($item->getMem());
-            $metric->setVsz($item->getVsz());
+            $metric->setVsize($item->getVsize());
             $metric->setRss($item->getRss());
+            $metric->setStime($item->getStime());
+            $metric->setUtime($item->getUtime());
+            $metric->setNumThreads($item->getNumThreads());
+            $metric->setPriority($item->getPriority());
+            $metric->setNice($item->getNice());
+            $metric->setShared($item->getShared());
+            $metric->setText($item->getText());
+            $metric->setData($item->getData());
             $metric->setCollectedAt(new DateTimeImmutable('@' . $batch->getCollectedAt()));
             $process->addMetric($metric);
             $this->em->persist($metric);
-            $this->em->persist($process);
-            if ($runFlush) {
-                $this->em->flush();
-            }
 
         }
         $this->em->flush();

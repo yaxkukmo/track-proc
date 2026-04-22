@@ -16,7 +16,8 @@ class ProcessSnapshot
         private int $nice,
         private int $shared,
         private int $text,
-        private int $data
+        private int $data,
+        private int $starttime
     )
     { }
 
@@ -67,16 +68,6 @@ class ProcessSnapshot
         return $this->pid;
     }
 
-    public function getCpu(): float
-    {
-        return $this->cpu;
-    }
-
-    public function getMem(): float
-    {
-        return $this->mem;
-    }
-
     public function getVsize(): int
     {
         return $this->vsize;
@@ -90,6 +81,11 @@ class ProcessSnapshot
     public function getCommand(): string
     {
         return $this->command;
+    }
+
+    public function getStarttime(): int
+    {
+        return $this->starttime;
     }
 
 }

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProcessRepository::class)]
+#[ORM\UniqueConstraint(columns: ['pid', 'starttime'])]
 class Process
 {
     #[ORM\Id]
@@ -15,11 +16,14 @@ class Process
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 16)]
-    private ?string $user = null;
+    #[ORM\Column]
+    private ?int $pid = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $command = null;
+    private ?string $name = null;
+
+    #[ORM\Column]
+    private ?int $starttime = null;
 
     /**
      * @var Collection<int, Metric>
@@ -44,26 +48,38 @@ class Process
         return $this;
     }
 
-    public function getUser(): ?string
+    public function getPid(): ?int
     {
-        return $this->user;
+        return $this->pid;
     }
 
-    public function setUser(string $user): static
+    public function setPid(int $pid): static
     {
-        $this->user = $user;
+        $this->pid = $pid;
 
         return $this;
     }
 
-    public function getCommand(): ?string
+    public function getName(): ?string
     {
-        return $this->command;
+        return $this->name;
     }
 
-    public function setCommand(string $command): static
+    public function setName(string $name): static
     {
-        $this->command = $command;
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getStarttime(): ?int
+    {
+        return $this->starttime;
+    }
+
+    public function setStarttime(int $starttime): static
+    {
+        $this->starttime = $starttime;
 
         return $this;
     }

@@ -10,9 +10,10 @@ class ProcPathGenerator
     public function __invoke(): array
     {
         $pids = preg_grep('/^\d+$/', scandir(self::PROC));
+        $pids = array_combine(array_values($pids), array_keys($pids));
          array_walk(
             $pids,
-            fn(&$value, $pid): array => $value = $this->generatePaths($pid),
+            fn(&$value, $pid): array => $value = $this->generatePaths($pid)
         );
         return $pids;
     }

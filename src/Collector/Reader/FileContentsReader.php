@@ -18,11 +18,7 @@ class FileContentsReader
 
     private function readFile(string $path): ?string
     {
-        try {
-            $contents = file_get_contents($path);
-        } catch (\Exception $e) {
-            $contents = null;
-        }
-        return $contents;
+        $contents = @file_get_contents($path);
+        return $contents === false ? null : $contents;
     }
 }

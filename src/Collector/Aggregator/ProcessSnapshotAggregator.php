@@ -25,18 +25,19 @@ class ProcessSnapshotAggregator
         $numberOfItems = count($rss);
 
         return new ProcessSnapshot(
-            stime: array_sum($stime)/$numberOfItems,
-            utime: array_sum($utime)/$numberOfItems,
-            numThreads: array_sum($numThreads)/$numberOfItems,
-            vsize: array_sum($vsize)/$numberOfItems,
-            rss: array_sum($rss)/$numberOfItems,
+            stime: (int)(array_sum($stime)/$numberOfItems),
+            utime: (int)(array_sum($utime)/$numberOfItems),
+            numThreads: (int)(array_sum($numThreads)/$numberOfItems),
+            vsize: (int)(array_sum($vsize)/$numberOfItems),
+            rss: (int)(array_sum($rss)/$numberOfItems),
             pid: $snapshot['pid'],
             command: $snapshot['name'],
             priority: $snapshot['priority'],
             nice: $snapshot['nice'],
-            shared: array_sum($shared)/$numberOfItems,
-            text: array_sum($text)/$numberOfItems,
-            data: array_sum($data)/$numberOfItems,
+            shared: (int)(array_sum($shared)/$numberOfItems),
+            text: (int)(array_sum($text)/$numberOfItems),
+            data: (int)(array_sum($data)/$numberOfItems),
+            starttime: $snapshot['starttime'],
         );
     }
 }
