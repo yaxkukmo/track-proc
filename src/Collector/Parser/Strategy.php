@@ -6,7 +6,8 @@ class Strategy
 {
     public function __construct(
         private StatParser $statStrategy,
-        private StatmParser $statmStrategy
+        private StatmParser $statmStrategy,
+        private CmdlineParser $cmdlineStrategy
     )
     { }
 
@@ -14,7 +15,8 @@ class Strategy
     {
         return match($type) {
             'stat' => $this->statStrategy,
-            'statm' => $this->statmStrategy
+            'statm' => $this->statmStrategy,
+            'cmdline' => $this->cmdlineStrategy,
         };
     }
 }

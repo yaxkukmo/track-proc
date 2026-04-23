@@ -5,7 +5,7 @@ namespace App\Collector\Generator;
 class ProcPathGenerator
 {
     private const PROC = '/proc';
-    private const FILES_TO_READ = ['stat', 'statm'];
+    private const FILES_TO_READ = ['stat', 'statm', 'cmdline'];
 
     public function __invoke(): array
     {

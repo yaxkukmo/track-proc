@@ -44,6 +44,7 @@ class CollectorCommand extends Command implements SignalableCommandInterface
             $paths = ($this->procPathGenerator)();
             $procFileContents = ($this->fileReader)($paths);
             ($this->procParser)($procFileContents, $windowData);
+            var_dump($windowData); exit;
             if ($this->isTimeToProcessBuffer($start)) {
                 $snapshots = [];
                 foreach ($windowData as $pid => $pidData) {

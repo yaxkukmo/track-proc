@@ -19,7 +19,7 @@ class ProcParser
                 }
             }
             if(!empty($tmp)) {
-                $windowData[$pid][] = array_merge($tmp[0], $tmp[1]);
+                $windowData[$pid][] = array_merge($tmp[0], $tmp[1], $tmp[2]);
             }
         }
     }

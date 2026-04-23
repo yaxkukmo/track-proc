@@ -35,7 +35,7 @@ class ProcessSnapshotAggregator
             vsize: (int)(array_sum($vsize)/$numberOfItems),
             rss: (int)(array_sum($rss)/$numberOfItems),
             pid: $snapshot['pid'],
-            command: $snapshot['name'],
+            command: $snapshot['cmdline'] ?? $snapshot['name'],
             priority: $snapshot['priority'],
             nice: $snapshot['nice'],
             shared: (int)(array_sum($shared)/$numberOfItems),

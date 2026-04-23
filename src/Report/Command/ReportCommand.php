@@ -38,6 +38,7 @@ class ReportCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $from = $input->getOption('from');
         $to = $input->getOption('to');
+        $report = '';
 
         if ($from) {
             $io->note(sprintf('You passed an option from: %s', $from));
@@ -49,8 +50,10 @@ class ReportCommand extends Command
 
         $report = $this->generator->render(
             [
-                $this->repo->findByDateRange('vsize', $from, $to),
-                $this->repo->findByDateRange('rss', $from, $to),
+                'vsize' => $this->repo->findByDateRangeInGb('vsize', $from, $to),
+                'rss' => $this->repo->findByDateRangeInMb('rss', $from, $to),
+                'stime' => $this->repo->findByDateRangeInSeconds('stime', $from, $to),
+                'utime' => $this->repo->findByDateRangeInSeconds('utime', $from, $to),
             ]
         );
 
