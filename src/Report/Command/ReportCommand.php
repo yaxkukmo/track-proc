@@ -54,14 +54,24 @@ class ReportCommand extends Command
                 'rss' => $this->repo->findByDateRangeInMb('rss', $from, $to),
                 'stime' => $this->repo->findByDateRangeInSeconds('stime', $from, $to),
                 'utime' => $this->repo->findByDateRangeInSeconds('utime', $from, $to),
+                'num_threads' => $this->repo->findByDateRange('num_threads', $from, $to),
+                'rss_top' => $this->createDataset($this->repo->findRssFiveLargestAvgProbes($from, $to)),
             ]
         );
-
         file_put_contents('/tmp/report_tmp.mm', $report);
-        shell_exec('groff -Tpdf -s -t -mm /tmp/report_tmp.mm > /tmp/report.pdf');
+        shell_exec('groff -Tpdf -U -s -G -t -mm /tmp/report_tmp.mm > /tmp/report.pdf');
         $io->success('Report generated. You can open /tmp/report.pdf');
 
         return Command::SUCCESS;
+    }
+
+    private function createDataset(array $rowData): array
+    {
+        $dataset = [];
+        foreach($rowData as $line) {
+            $dataset[$line['pid']][] = [$line['val'], $line['collected_at']];
+        }
+        return $dataset;
     }
 
 }

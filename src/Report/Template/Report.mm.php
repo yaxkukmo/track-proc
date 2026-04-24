@@ -17,6 +17,7 @@ _
 
 <?php endforeach; ?>
 .TE
+
 .SK
 .ce
 .B "Resident memory usage"
@@ -30,10 +31,23 @@ _
 ;;;;
 <?php foreach($data['rss'] as $l): ?>
 \&\x'4p'<?=$l['name'] ?>;<?=$l['pid'] ?>;<?=$l['avg_rss'] ?>;<?=$l['min_rss'] ?>;<?=$l['max_rss'] ?>
-
 <?php endforeach; ?>
 .TE
-
+<?php foreach($data['rss_top'] as $k => $v): ?>
+.ne 3i
+.sp 2
+.ce
+.B "Process <?=$k ?> trend in time"
+.G1
+frame invis ht 2 wid 5 left solid bot solid
+draw solid
+label bot "Time (in seconds)" left .25
+label left "RSS values" left .25
+    <?php foreach($v as $d): ?>
+<?=$d[1]. "\t$d[0]\n" ?>
+    <?php endforeach; ?>
+.G2
+<?php endforeach; ?>
 .SK
 .ce
 .B "Kernel space CPU time"
@@ -64,6 +78,24 @@ _
 ;;;;
 <?php foreach($data['utime'] as $l): ?>
 \&\x'4p'<?=$l['name'] ?>;<?=$l['pid'] ?>;<?=$l['avg_utime'] ?>;<?=$l['min_utime'] ?>;<?=$l['max_utime'] ?>
+
+<?php endforeach; ?>
+.TE
+
+
+.SK
+.ce
+.B "Thread count"
+.TS H
+linesize(1) expand center tab(;);
+lb1| lb1| lb1| lb1| lb
+l1| l2| N1| N1| N.
+\f3Command\f1;\f3Pid\f1;\f3Avg utime[s]\f1;\f3Min utime[s]\f1;\f3Max utime[s]\f1
+_
+.TH
+;;;;
+<?php foreach($data['num_threads'] as $l): ?>
+\&\x'4p'<?=$l['name'] ?>;<?=$l['pid'] ?>;<?=$l['avg_num_threads'] ?>;<?=$l['min_num_threads'] ?>;<?=$l['max_num_threads'] ?>
 
 <?php endforeach; ?>
 .TE
