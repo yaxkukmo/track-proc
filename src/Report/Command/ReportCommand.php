@@ -55,9 +55,14 @@ class ReportCommand extends Command
                 'stime' => $this->repo->findByDateRangeInSeconds('stime', $from, $to),
                 'utime' => $this->repo->findByDateRangeInSeconds('utime', $from, $to),
                 'num_threads' => $this->repo->findByDateRange('num_threads', $from, $to),
-                'rss_top' => $this->createDataset($this->repo->findRssFiveLargestAvgProbes($from, $to)),
+                'rss_top' => $this->createDataset($this->repo->findRssProbesForTop5Avg($from, $to)),
+                'vsize_top'=> $this->createDataset($this->repo->findVsizeProbesForTop5Avg($from, $to)),
+                'stime_top'=> $this->createDataset($this->repo->findStimeProbesForTop5Avg($from, $to)),
+                'utime_top'=> $this->createDataset($this->repo->findUtimeProbesForTop5Avg($from, $to)),
+                'threads_count_top'=> $this->createDataset($this->repo->findThreadsCountProbesForTop5Avg($from, $to)),
             ]
         );
+
         file_put_contents('/tmp/report_tmp.mm', $report);
         shell_exec('groff -Tpdf -U -s -G -t -mm /tmp/report_tmp.mm > /tmp/report.pdf');
         $io->success('Report generated. You can open /tmp/report.pdf');

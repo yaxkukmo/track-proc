@@ -1,5 +1,5 @@
 .nr F 3
-.PH ""
+.PH "'System resources report'- % -'2026-01-01 00:00 - 20260-04-15 23.59'"
 .PF "'System resources report'- % -'2026-01-01 00:00 - 20260-04-15 23.59'"
 .SK
 .ce
@@ -18,6 +18,22 @@ _
 <?php endforeach; ?>
 .TE
 
+<?php foreach($data['vsize_top'] as $k => $v): ?>
+.ne 3i
+.sp 2
+.ce
+.B "Process <?=$k ?>"
+.G1
+frame invis ht 2 wid 5 left solid bot solid
+draw solid
+label bot "Time (in seconds)" left .25
+label left "Vsize values" left .25
+<?php foreach($v as $d): ?>
+<?=$d[1]. "\t$d[0]\n" ?>
+<?php endforeach; ?>
+.G2
+<?php endforeach; ?>
+
 .SK
 .ce
 .B "Resident memory usage"
@@ -30,24 +46,26 @@ _
 .TH
 ;;;;
 <?php foreach($data['rss'] as $l): ?>
-\&\x'4p'<?=$l['name'] ?>;<?=$l['pid'] ?>;<?=$l['avg_rss'] ?>;<?=$l['min_rss'] ?>;<?=$l['max_rss'] ?>
+\&\x'4p'<?=$l['name'] ?>;<?=$l['pid'] ?>;<?=$l['avg_rss'] ?>;<?=$l['min_rss'] ?>;<?=$l['max_rss']."\n" ?>
 <?php endforeach; ?>
 .TE
+
 <?php foreach($data['rss_top'] as $k => $v): ?>
 .ne 3i
 .sp 2
 .ce
-.B "Process <?=$k ?> trend in time"
+.B "Process <?=$k ?>"
 .G1
 frame invis ht 2 wid 5 left solid bot solid
 draw solid
 label bot "Time (in seconds)" left .25
 label left "RSS values" left .25
-    <?php foreach($v as $d): ?>
+<?php foreach($v as $d): ?>
 <?=$d[1]. "\t$d[0]\n" ?>
-    <?php endforeach; ?>
+<?php endforeach; ?>
 .G2
 <?php endforeach; ?>
+
 .SK
 .ce
 .B "Kernel space CPU time"
@@ -64,6 +82,22 @@ _
 
 <?php endforeach; ?>
 .TE
+
+<?php foreach($data['stime_top'] as $k => $v): ?>
+.ne 3i
+.sp 2
+.ce
+.B "Process <?=$k ?>"
+.G1
+frame invis ht 2 wid 5 left solid bot solid
+draw solid
+label bot "Time (in seconds)" left .25
+label left "STIME values" left .25
+<?php foreach($v as $d): ?>
+<?=$d[1]. "\t$d[0]\n" ?>
+<?php endforeach; ?>
+.G2
+<?php endforeach; ?>
 
 .SK
 .ce
@@ -82,6 +116,21 @@ _
 <?php endforeach; ?>
 .TE
 
+<?php foreach($data['utime_top'] as $k => $v): ?>
+.ne 3i
+.sp 2
+.ce
+.B "Process <?=$k ?>"
+.G1
+frame invis ht 2 wid 5 left solid bot solid
+draw solid
+label bot "Time (in seconds)" left .25
+label left "UTIME values" left .25
+<?php foreach($v as $d): ?>
+<?=$d[1]. "\t$d[0]\n" ?>
+<?php endforeach; ?>
+.G2
+<?php endforeach; ?>
 
 .SK
 .ce
@@ -99,3 +148,19 @@ _
 
 <?php endforeach; ?>
 .TE
+
+<?php foreach($data['threads_count_top'] as $k => $v): ?>
+.ne 3i
+.sp 2
+.ce
+.B "Process <?=$k ?>"
+.G1
+frame invis ht 2 wid 5 left solid bot solid
+draw solid
+label bot "Time (in seconds)" left .25
+label left "Threads number" left .25
+<?php foreach($v as $d): ?>
+<?=$d[1]. "\t$d[0]\n" ?>
+<?php endforeach; ?>
+.G2
+<?php endforeach; ?>
