@@ -13,7 +13,7 @@ class GroffPdfGenerator
 
     }
 
-    public function render(array $data): string
+    public function render(array $data, string $from, string $to): string
     {
         ob_start();
         include $this->projectDir . '/src/Report/Template/Report.mm.php';

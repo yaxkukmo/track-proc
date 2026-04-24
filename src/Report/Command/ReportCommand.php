@@ -36,8 +36,8 @@ class ReportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $from = $input->getOption('from');
-        $to = $input->getOption('to');
+        $from = $input->getOption('from') . ' 00:00:00';
+        $to = $input->getOption('to') . ' 23:59:59';
         $report = '';
 
         if ($from) {
@@ -60,7 +60,9 @@ class ReportCommand extends Command
                 'stime_top'=> $this->createDataset($this->repo->findStimeProbesForTop5Avg($from, $to)),
                 'utime_top'=> $this->createDataset($this->repo->findUtimeProbesForTop5Avg($from, $to)),
                 'threads_count_top'=> $this->createDataset($this->repo->findThreadsCountProbesForTop5Avg($from, $to)),
-            ]
+            ],
+            $from,
+            $to
         );
 
         file_put_contents('/tmp/report_tmp.mm', $report);

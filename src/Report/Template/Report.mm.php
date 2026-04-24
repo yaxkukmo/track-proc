@@ -1,6 +1,6 @@
 .nr F 3
-.PH "'System resources report'- % -'2026-01-01 00:00 - 20260-04-15 23.59'"
-.PF "'System resources report'- % -'2026-01-01 00:00 - 20260-04-15 23.59'"
+.PH "'System resources report'- % -'<?=$from . " - " . $to?>'"
+.PF "'System resources report'- % -'<?=$from . " - " . $to?>'"
 .SK
 .ce
 .B "Virtual memory usage"
