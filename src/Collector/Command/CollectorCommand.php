@@ -17,7 +17,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsCommand(
     name: 'app:collector',
-    description: 'Command for collecting and agregating data from ps aux',
+    description: 'Command for collecting and aggregating data from /proc',
 )]
 class CollectorCommand extends Command implements SignalableCommandInterface
 {
@@ -44,7 +44,6 @@ class CollectorCommand extends Command implements SignalableCommandInterface
             $paths = ($this->procPathGenerator)();
             $procFileContents = ($this->fileReader)($paths);
             ($this->procParser)($procFileContents, $windowData);
-            var_dump($windowData); exit;
             if ($this->isTimeToProcessBuffer($start)) {
                 $snapshots = [];
                 foreach ($windowData as $pid => $pidData) {

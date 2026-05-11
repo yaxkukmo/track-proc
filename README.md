@@ -1,6 +1,6 @@
 # proc-track
 
-Aplikacja do monitorowania i śledzenia procesów systemowych w czasie rzeczywistym. Zbiera dane z `ps aux`, agreguje je co 10 sekund i przesyła do bazy danych przez kolejkę wiadomości.
+Aplikacja do monitorowania i śledzenia procesów systemowych w czasie rzeczywistym. Zbiera dane z systemu plików `/proc`, agreguje je co 10 sekund i przesyła do bazy danych przez kolejkę wiadomości.
 
 ## Stos technologiczny
 
@@ -39,7 +39,7 @@ php bin/console doctrine:migrations:migrate
 
 ### Kolektor procesów
 
-Zbiera dane z `ps aux` co 10 sekund i wysyła je do kolejki:
+Zbiera dane z `/proc` co 10 sekund i wysyła je do kolejki:
 
 ```bash
 php bin/console app:collector
@@ -61,7 +61,7 @@ Raporty generowane są do formatu PDF przy użyciu **groff**. Generator (`GroffP
 
 ```
 src/
-├── Collector/   # Parsowanie ps aux, agregacja snapshotów
+├── Collector/   # Parsowanie /proc, agregacja snapshotów
 ├── Processor/   # Obsługa wiadomości z kolejki
 ├── Report/      # Generowanie raportów (groff → PDF)
 ├── Entity/      # Encje Doctrine (Process, Metric)
